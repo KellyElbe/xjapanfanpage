@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X JAPAN 管理后台 - 登录</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-background">
+            <div class="particles"></div>
+        </div>
+        
+        <div class="login-card">
+            <div class="login-header">
+                <div class="admin-logo">
+                    <h1 class="logo-text">X JAPAN</h1>
+                    <p class="logo-subtitle">管理后台</p>
+                </div>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username">管理员账号</label>
+                    <input type="text" id="username" name="username" required placeholder="请输入管理员账号">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required placeholder="请输入密码">
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        记住登录状态
+                    </label>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">登录管理后台</span>
+                    <div class="btn-loading" style="display: none;">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </button>
+                
+                <div class="error-message" id="errorMessage" style="display: none;"></div>
+            </form>
+            
+            <div class="login-footer">
+                <p>&copy; 2024 X JAPAN 官方网站管理系统</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="admin-script.js"></script>
+</body>
+</html>

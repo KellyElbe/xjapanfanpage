@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML修改工具 - 实用版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+
+        .left-panel, .right-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            background: #f8f9fa;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .code-input {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            resize: none;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            background: #fafafa;
+            outline: none;
+        }
+
+        .modification-section {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quick-action {
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .quick-action:hover {
+            background: #e9ecef;
+            border-color: #3498db;
+        }
+
+        .modification-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .modification-input:focus {
+            border-color: #3498db;
+        }
+
+        .modification-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .preview-container {
+            flex: 1;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .status-bar {
+            padding: 10px 20px;
+            background: #ecf0f1;
+            border-radius: 0 0 12px 12px;
+            font-size: 12px;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .example-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: #17a2b8;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .example-text {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛠️ HTML修改工具 - 实用版</h1>
+            <p>简单直接的HTML修改工具，支持基础文本替换和元素操作</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 左侧面板 -->
+            <div class="left-panel">
+                <div class="panel-header">
+                    <span class="panel-title">📝 HTML代码编辑</span>
+                    <div>
+                        <button class="btn btn-primary" onclick="previewHTML()">预览</button>
+                        <button class="btn btn-success" onclick="saveHTML()">保存</button>
+                    </div>
+                </div>
+                
+                <textarea 
+                    class="code-input" 
+                    id="htmlInput" 
+                    placeholder="请粘贴您的HTML代码..."
+                ></textarea>
+
+                <div class="modification-section">
+                    <label style="display: block; margin-bottom: 15px; font-weight: 600; color: #2c3e50;">
+                        🎯 快速操作
+                    </label>
+                    
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="showTextReplaceDialog()">
+                            📝 文本替换
+                        </div>
+                        <div class="quick-action" onclick="showDeleteDialog()">
+                            🗑️ 删除内容
+                        </div>
+                        <div class="quick-action" onclick="showStyleDialog()">
+                            🎨 修改样式
+                        </div>
+                        <div class="quick-action" onclick="showAddDialog()">
+                            ➕ 添加内容
+                        </div>
+                    </div>
+
+                    <label for="modificationInput" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50;">
+                        ✏️ 手动修改指令
+                    </label>
+                    <textarea 
+                        class="modification-input" 
+                        id="modificationInput"
+                        placeholder="输入修改指令，例如：&#10;replace:旧文本->新文本&#10;delete:要删除的文本&#10;style:color->red&#10;add:bottom->新内容"
+                    ></textarea>
+                    
+                    <div class="modification-controls">
+                        <button class="btn btn-primary" onclick="applyModifications()">
+                            ✨ 应用修改
+                        </button>
+                        <button class="btn btn-warning" onclick="resetHTML()">🔄 重置</button>
+                    </div>
+
+                    <div class="example-section">
+                        <div class="example-title">💡 指令格式说明</div>
+                        <div class="example-text">
+                            • <strong>replace:旧文本->新文本</strong> - 替换文本<br>
+                            • <strong>delete:要删除的文本</strong> - 删除包含该文本的元素<br>
+                            • <strong>style:属性->值</strong> - 修改样式（如 color->red）<br>
+                            • <strong>add:位置->内容</strong> - 添加内容（位置：top/bottom）<br>
+                            • 每行一个指令，支持多个指令同时执行
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧面板 -->
+            <div class="right-panel">
+                <div class="panel-header">
+                    <span class="panel-title">👁️ 实时预览</span>
+                    <button class="btn btn-primary" onclick="refreshPreview()">🔄 刷新预览</button>
+                </div>
+                
+                <div class="preview-container">
+                    <iframe class="preview-frame" id="previewFrame" src="about:blank"></iframe>
+                </div>
+
+                <div class="status-bar">
+                    <span id="statusText">就绪</span>
+                    <span id="lastModified"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentHTML = '';
+
+        // 预览HTML
+        function previewHTML() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            if (!htmlContent.trim()) {
+                showStatus('请先输入HTML代码', 'error');
+                return;
+            }
+
+            currentHTML = htmlContent;
+            const previewFrame = document.getElementById('previewFrame');
+            
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            previewFrame.src = url;
+            
+            showStatus('✅ 预览已更新', 'success');
+            updateLastModified();
+        }
+
+        // 应用修改
+        function applyModifications() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            const modifications = document.getElementById('modificationInput').value;
+
+            if (!htmlContent.trim()) {
+                showStatus('请先输入HTML代码', 'error');
+                return;
+            }
+
+            if (!modifications.trim()) {
+                showStatus('请输入修改指令', 'error');
+                return;
+            }
+
+            showStatus('🔄 正在处理修改...', 'info');
+
+            try {
+                let modifiedHTML = htmlContent;
+                const lines = modifications.split('\n').filter(line => line.trim());
+                
+                for (const line of lines) {
+                    modifiedHTML = processCommand(modifiedHTML, line.trim());
+                }
+                
+                document.getElementById('htmlInput').value = modifiedHTML;
+                previewHTML();
+                document.getElementById('modificationInput').value = '';
+                
+                showStatus('✅ 修改已成功应用！', 'success');
+            } catch (error) {
+                showStatus('❌ 修改失败: ' + error.message, 'error');
+            }
+        }
+
+        // 处理单个命令
+        function processCommand(html, command) {
+            if (command.startsWith('replace:')) {
+                const parts = command.substring(8).split('->');
+                if (parts.length === 2) {
+                    const oldText = parts[0].trim();
+                    const newText = parts[1].trim();
+                    return html.replace(new RegExp(escapeRegExp(oldText), 'g'), newText);
+                }
+            } else if (command.startsWith('delete:')) {
+                const textToDelete = command.substring(7).trim();
+                return deleteTextFromHTML(html, textToDelete);
+            } else if (command.startsWith('style:')) {
+                const parts = command.substring(6).split('->');
+                if (parts.length === 2) {
+                    const property = parts[0].trim();
+                    const value = parts[1].trim();
+                    return addStyleToHTML(html, property, value);
+                }
+            } else if (command.startsWith('add:')) {
+                const parts = command.substring(4).split('->');
+                if (parts.length === 2) {
+                    const position = parts[0].trim();
+                    const content = parts[1].trim();
+                    return addContentToHTML(html, position, content);
+                }
+            }
+            return html;
+        }
+
+        // 从HTML中删除文本
+        function deleteTextFromHTML(html, textToDelete) {
+            // 简单的删除策略：删除包含该文本的行
+            const lines = html.split('\n');
+            const filteredLines = lines.filter(line => !line.includes(textToDelete));
+            return filteredLines.join('\n');
+        }
+
+        // 添加样式到HTML
+        function addStyleToHTML(html, property, value) {
+            // 查找是否已有style标签
+            if (html.includes('<style>')) {
+                // 在现有style标签中添加
+                return html.replace('</style>', `  body * { ${property}: ${value} !important; }\n</style>`);
+            } else {
+                // 在head中添加新的style标签
+                const styleTag = `<style>\n  body * { ${property}: ${value} !important; }\n</style>`;
+                if (html.includes('</head>')) {
+                    return html.replace('</head>', `${styleTag}\n</head>`);
+                } else {
+                    return `${styleTag}\n${html}`;
+                }
+            }
+        }
+
+        // 添加内容到HTML
+        function addContentToHTML(html, position, content) {
+            const contentDiv = `<div style="text-align: center; padding: 20px; color: #666;">${content}</div>`;
+            
+            if (position === 'top') {
+                if (html.includes('<body>')) {
+                    return html.replace('<body>', `<body>\n${contentDiv}`);
+                } else {
+                    return `${contentDiv}\n${html}`;
+                }
+            } else if (position === 'bottom') {
+                if (html.includes('</body>')) {
+                    return html.replace('</body>', `${contentDiv}\n</body>`);
+                } else {
+                    return `${html}\n${contentDiv}`;
+                }
+            }
+            return html;
+        }
+
+        // 转义正则表达式特殊字符
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // 显示文本替换对话框
+        function showTextReplaceDialog() {
+            const oldText = prompt('请输入要替换的文本:');
+            if (oldText) {
+                const newText = prompt('请输入新文本:');
+                if (newText !== null) {
+                    document.getElementById('modificationInput').value = `replace:${oldText}->${newText}`;
+                }
+            }
+        }
+
+        // 显示删除对话框
+        function showDeleteDialog() {
+            const textToDelete = prompt('请输入要删除的文本（将删除包含该文本的行）:');
+            if (textToDelete) {
+                document.getElementById('modificationInput').value = `delete:${textToDelete}`;
+            }
+        }
+
+        // 显示样式对话框
+        function showStyleDialog() {
+            const property = prompt('请输入CSS属性名（如 color, background-color, font-size）:');
+            if (property) {
+                const value = prompt('请输入CSS属性值（如 red, #ff0000, 18px）:');
+                if (value) {
+                    document.getElementById('modificationInput').value = `style:${property}->${value}`;
+                }
+            }
+        }
+
+        // 显示添加对话框
+        function showAddDialog() {
+            const position = prompt('请选择添加位置（输入 top 或 bottom）:');
+            if (position === 'top' || position === 'bottom') {
+                const content = prompt('请输入要添加的内容:');
+                if (content) {
+                    document.getElementById('modificationInput').value = `add:${position}->${content}`;
+                }
+            }
+        }
+
+        // 保存HTML文件
+        function saveHTML() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            if (!htmlContent.trim()) {
+                showStatus('没有内容可保存', 'error');
+                return;
+            }
+
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `modified_page_${new Date().getTime()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus('✅ 文件已保存到下载文件夹', 'success');
+        }
+
+        // 重置HTML
+        function resetHTML() {
+            if (confirm('确定要重置所有内容吗？')) {
+                document.getElementById('htmlInput').value = '';
+                document.getElementById('modificationInput').value = '';
+                document.getElementById('previewFrame').src = 'about:blank';
+                showStatus('已重置', 'success');
+            }
+        }
+
+        // 刷新预览
+        function refreshPreview() {
+            previewHTML();
+        }
+
+        // 显示状态信息
+        function showStatus(message, type = 'info') {
+            const statusElement = document.getElementById('statusText');
+            statusElement.textContent = message;
+            
+            if (type === 'error') {
+                statusElement.style.color = '#e74c3c';
+            } else if (type === 'success') {
+                statusElement.style.color = '#27ae60';
+            } else {
+                statusElement.style.color = '#3498db';
+            }
+            
+            setTimeout(() => {
+                statusElement.textContent = '就绪';
+                statusElement.style.color = '#7f8c8d';
+            }, 3000);
+        }
+
+        // 更新最后修改时间
+        function updateLastModified() {
+            const lastModifiedElement = document.getElementById('lastModified');
+            lastModifiedElement.textContent = `最后更新: ${new Date().toLocaleString('zh-CN')}`;
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            showStatus('🚀 实用版工具已就绪！', 'success');
+        });
+    </script>
+</body>
+</html>

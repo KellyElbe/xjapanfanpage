@@ -1,0 +1,1653 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>九三大阅兵专题</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+    <style>
+        :root {
+            --color-primary: #c12c1f;
+            --color-secondary: #0c4da2;
+            --color-accent: #ffd700;
+            --color-danger: #e02c53;
+            --color-success: #00bf7e;
+            --color-info: #3377ff;
+            --color-warning: #ffb700;
+            --color-highlight: #ffe796;
+            
+            --color-bg-light: #fff6f6;
+            --color-bg-cream: #fff6ee;
+            --color-bg-dark: #1a1a1a;
+
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-full: 40px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+            font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .mobile-container {
+            width: 375px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .chapter-bar {
+            display: flex;
+            align-items: center;
+            padding: 5px 20px;
+            font-family: "Avenir Next", Arial, sans-serif;
+        }
+
+        .chapter-bar .number {
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--color-primary);
+            line-height: 1;
+        }
+
+        .chapter-bar .of {
+            color: #888;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .chapter-bar .dash {
+            flex: 1;
+            height: 1px;
+            background-image: repeating-linear-gradient(
+                to right,
+                #888 0,
+                #888 4px,
+                transparent 4px,
+                transparent 8px
+            );
+            opacity: 0.5;
+        }
+
+        .chapter-bar.active .number {
+            text-shadow: 0 2px 4px rgba(193, 44, 31, 0.3);
+        }
+
+        .hero-section {
+            width: 375px;
+            padding: 60px 16px 0px;
+            background: linear-gradient(
+                360deg,
+                #a71d2a 0%,
+                #c12c1f 31%,
+                rgba(193, 44, 31, 0.7) 100%
+            );
+            position: relative;
+            min-height: 300px;
+        }
+
+        .hero-section__subtitle {
+            font-size: 12px;
+            color: white;
+            margin-bottom: 8px;
+            text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .hero-section__title {
+            font-size: 30px;
+            font-family: "Lantinghei SC", sans-serif;
+            line-height: 1.3;
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 16px;
+        }
+
+        .hero-section__title .white {
+            color: white;
+        }
+
+        .hero-section__title .highlight {
+            color: var(--color-accent);
+            font-weight: bold;
+        }
+
+        .text-highlight {
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                #ffd700 50%
+            );
+            padding: 0 4px;
+            display: inline;
+        }
+
+        .attention-trend {
+            position: absolute;
+            width: 375px;
+            height: 200px;
+            bottom: 10px;
+            left: 0;
+        }
+
+        .trend-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .trend-point {
+            position: absolute;
+            font-size: 9.55px;
+            color: white;
+            text-align: center;
+            font-weight: 500;
+            z-index: 10;
+        }
+
+        .trend-point.opacity-50 {
+            opacity: 0.7;
+        }
+
+        .trend-dot {
+            width: 12px;
+            height: 12px;
+            background: #901818;
+            border-radius: 50%;
+            border: 3.18px solid white;
+            margin: 0 auto 4px;
+            position: relative;
+            z-index: 11;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .trend-points-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .content-section {
+            width: 375px;
+            padding: 0 15px 0px;
+        }
+
+        .info-card {
+            width: 345px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-card__header {
+            background: white;
+            color: white;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            height: 28px;
+            position: relative;
+        }
+
+        .info-card__header-title {
+            background: var(--color-primary);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 28px;
+            border-radius: 12px 0 12px 0;
+        }
+
+        .info-card__icon {
+            font-size: 14px;
+            color: white;
+        }
+
+        .info-card__title {
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .info-card__date {
+            font-size: 12px;
+            font-weight: 400;
+            color: #999999;
+            padding: 0 16px;
+            margin-left: auto;
+        }
+
+        .info-card__body {
+            padding: 12px;
+        }
+
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 10px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 500;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .tag--danger { background: var(--color-danger); }
+        .tag--success { background: var(--color-success); }
+        .tag--warning { background: var(--color-warning); }
+        .tag--info { background: var(--color-info); }
+        .tag--primary { background: var(--color-primary); }
+        .tag--secondary { background: var(--color-secondary); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 4px;
+            background: white;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card__value-wrapper {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .stat-card__value {
+            font-size: 20px;
+            font-family: "Avenir Next", sans-serif;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-card__unit {
+            font-size: 12px;
+            color: #333;
+            margin-left: 2px;
+            font-weight: 400;
+        }
+
+        .stat-card__label {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .stat-card__badge {
+            background: var(--color-primary);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--color-primary);
+            opacity: 0.3;
+        }
+
+        .timeline__item {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .timeline__item::before {
+            content: "";
+            position: absolute;
+            left: -27px;
+            top: 8px;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border: 1.88px solid var(--color-primary);
+            border-radius: 50%;
+            box-shadow: 0px 2.8px 5.6px rgba(2, 0, 61, 0.06);
+        }
+
+        .timeline__date {
+            font-size: 12px;
+            color: #666;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .timeline__content {
+            background: var(--color-bg-light);
+            border: 0.5px solid #ffc0c0;
+            border-radius: 0 8px 8px 8px;
+            padding: 12px;
+            width: calc(100% - 5px);
+        }
+
+        .timeline__title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #901818;
+            margin-bottom: 8px;
+        }
+
+        .timeline__description {
+            font-size: 13px;
+            line-height: 20px;
+            color: #333;
+        }
+
+        .equipment-section {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .equipment-section__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .equipment-section__icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .icon-text {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            letter-spacing: 0;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .equipment-section__header:hover .equipment-section__icon {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .equipment-section__title {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .equipment-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 10px;
+            background: linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.9),
+                rgba(255, 255, 255, 0.9)
+            ), #c12c1f;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .equipment-item:active {
+            transform: scale(0.95);
+        }
+
+        .quote-section {
+            padding: 0;
+        }
+
+        .quote {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .quote::before {
+            content: """;
+            position: absolute;
+            top: 8px;
+            left: 10px;
+            font-size: 60px;
+            color: rgba(193, 44, 31, 0.1);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .quote__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote__meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .quote__author {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .quote__date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .quote__content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+            position: relative;
+            z-index: 1;
+            padding-left: 12px;
+        }
+
+        .chart-container {
+            background: #f4faff;
+            border: 0.5px solid #e7e7e7;
+            border-radius: 12px;
+            width: 90%;
+            margin: 10px auto;
+        }
+
+        .international-section {
+            padding: 0;
+        }
+
+        .country-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .country-card {
+            background: var(--color-bg-light);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .country-card__flag {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .country-card__name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .country-card__leader {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .gallery-item {
+            background: var(--color-bg-light);
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            height: 0;
+            padding-bottom: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item__text {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 10px;
+            color: #333;
+        }
+
+        .reference-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 10px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.9);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .reference-button:hover {
+            background: rgba(200, 200, 200, 0.6);
+            color: white;
+        }
+
+        .reference-count {
+            font-size: 14px;
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .arrow-icon {
+            width: 10px;
+            height: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-section {
+            padding: 0;
+        }
+
+        .comparison-cards {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .comparison-card {
+            flex: 1;
+            height: 100px;
+            border-radius: 12px;
+            position: relative;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comparison-card--local {
+            background: var(--color-primary);
+        }
+
+        .comparison-card--external {
+            background: var(--color-secondary);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+            }
+        }
+
+        .trend-dot:not(.opacity-50) {
+            animation: pulse 2s infinite;
+        }
+
+        @media screen and (max-width: 375px) {
+            .mobile-container {
+                width: 100%;
+            }
+
+            .hero-section,
+            .content-section,
+            .info-card {
+                width: calc(100% - 30px);
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        @media screen and (min-width: 376px) {
+            body {
+                background: #e0e0e0;
+            }
+
+            .mobile-container {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.show {
+            display: block;
+        }
+
+        .modal-container {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 360px;
+            max-height: 70vh;
+            overflow: hidden;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #fff, #fafafa);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .modal-body {
+            padding: 12px 0;
+            max-height: calc(70vh - 65px);
+            overflow-y: auto;
+        }
+
+        .reference-list {
+            list-style: none;
+        }
+
+        .reference-link {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333;
+            transition: background 0.2s ease;
+            border-radius: 0;
+        }
+
+        .reference-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            background: #fff4e5;
+            color: var(--color-primary);
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translate(-50%, -45%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <section class="hero-section">
+            <p class="hero-section__subtitle">中国人民抗日战争暨世界反法西斯战争胜利80周年</p>
+            <h1 class="hero-section__title">
+                <span class="white">九三</span>
+                <span class="highlight">盛大阅兵</span>
+            </h1>
+            
+
+        </section>
+
+        <div class="content-section">
+            <article class="info-card">
+                <header class="info-card__header">
+                    <div class="info-card__header-title">
+                        <span class="info-card__icon">📊</span>
+                        <h2 class="info-card__title">核心数据</h2>
+                    </div>
+                    <span class="reference-button" onclick="toggleModal(event, this)" style="color: #c12c1f; font-weight: 600; background: rgba(193, 44, 31, 0.1);">
+                        <span class="reference-count" style="color: #c12c1f;">10</span>
+                        <span>篇资料</span>
+                        <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                            <path fill="currentColor" d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <time class="info-card__date">2025年9月3日</time>
+                </header>
+
+                <div class="info-card__body">
+                    <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); justify-content: center; max-width: 300px; margin: 0 auto;">
+                        <div class="stat-card">
+                            <div class="stat-card__value-wrapper">
+                                <span class="stat-card__value">45</span>
+                                <span class="stat-card__unit">个</span>
+                            </div>
+                            <div class="stat-card__label">受阅方队</div>
+                            <span class="stat-card__badge">盛大规模</span>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card__value-wrapper">
+                                <span class="stat-card__value">26</span>
+                                <span class="stat-card__unit">国</span>
+                            </div>
+                            <div class="stat-card__label">领导人出席</div>
+                            <span class="stat-card__badge tag--info">国际盛会</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <section class="chapter-bar active" data-chapter="1">
+            <span class="number">1</span>
+            <span class="of"> / 7</span>
+            <div class="dash"></div>
+        </section>
+
+        <div class="content-section">
+            <article class="info-card">
+                <header class="info-card__header">
+                    <div class="info-card__header-title">
+                        <span class="info-card__icon">🎖️</span>
+                        <h2 class="info-card__title">阅兵意义</h2>
+                    </div>
+                </header>
+
+                <div class="info-card__body">
+                    <p style="margin: 10px 10px; font-size: 13px">
+                        <strong>📍 地点：</strong>北京天安门广场
+                    </p>
+                    <p style="margin: 10px 10px; font-size: 13px">
+                        <strong>🕐 时间：</strong>2025年9月3日
+                    </p>
+
+                    <div class="tag-group">
+                    </div>
+
+                    <p style="font-size: 13px; line-height: 1.8; color: #333; margin-top: 12px; padding: 4px;">
+                        2025年9月3日，为纪念中国人民抗日战争暨世界反法西斯战争胜利80周年，北京天安门广场举行盛大阅兵。此次阅兵不仅是对历史的<span class="text-highlight">回顾和缅怀</span>，也是对先烈的敬仰，更是向世界展示中国军队<span class="text-highlight">现代化建设</span>的最新成果。新型武器装备如空警-600、歼-20S等首次亮相，彰显了中国维护世界和平的决心和实力。
+                    </p>
+                    
+                    <div class="quote">
+                        <div class="quote__content">
+                            <p>"中华民族伟大复兴势不可挡！人类和平与发展的崇高事业必将胜利！" -- 习近平</p>
+                        </div>
+                        <div class="quote__header">
+                            <div class="quote__meta">
+                                <h4 class="quote__author"> </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <section class="chapter-bar" data-chapter="2">
+            <span class="number">2</span>
+            <span class="of"> / 7</span>
+            <div class="dash"></div>
+        </section>
+
+        <div class="content-section">
+            <article class="info-card">
+                <header class="info-card__header">
+                    <div class="info-card__header-title">
+                        <span class="info-card__icon">⭐</span>
+                        <h2 class="info-card__title">阅兵亮点</h2>
+                    </div>
+                </header>
+                <div class="info-card__body">
+                    <div class="equipment-section">
+                        <div class="equipment-section__header">
+                            <span class="equipment-section__icon" style="background: #c12c1f">
+                                <span class="icon-text">新</span>
+                            </span>
+                            <h3 class="equipment-section__title">首次亮相装备</h3>
+                        </div>
+
+                        <div class="equipment-grid">
+                            <button class="equipment-item">空警-600<br>预警机</button>
+                            <button class="equipment-item">歼-20S<br>双座战机</button>
+                            <button class="equipment-item">歼-35A<br>五代战机</button>
+                            <button class="equipment-item">东风-61<br>洲际导弹</button>
+                            <button class="equipment-item">100式坦克<br>新型主战坦克</button>
+                            <button class="equipment-item">红旗-29<br>反导系统</button>
+                        </div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <div class="equipment-section__header">
+                            <span class="equipment-section__icon" style="background: #0c4da2">
+                                <span class="icon-text">旗</span>
+                            </span>
+                            <h3 class="equipment-section__title">新军旗亮相</h3>
+                        </div>
+
+                        <div class="equipment-grid">
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #0c4da2;">军事航天部队</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #0c4da2;">网络空间部队</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #0c4da2;">信息支援部队</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #0c4da2;">联勤保障部队</button>
+                        </div>
+                    </div>
+
+                    <div class="tag-group">
+                        <span class="tag tag--primary">力量结构新布局</span>
+                        <span class="tag tag--info">现代化建设新进展</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <section class="chapter-bar" data-chapter="3">
+            <span class="number">3</span>
+            <span class="of"> / 7</span>
+            <div class="dash"></div>
+        </section>
+
+        <div class="content-section">
+            <article class="info-card">
+                <header class="info-card__header">
+                    <div class="info-card__header-title">
+                        <span class="info-card__icon">🕒</span>
+                        <h2 class="info-card__title">阅兵时间线</h2>
+                    </div>
+                </header>
+                <div class="info-card__body">
+                    <ol class="timeline">
+                        <li class="timeline__item">
+                            <time class="timeline__date">2025年9月3日 9:00</time>
+                            <div class="timeline__content">
+                                <h3 class="timeline__title">纪念大会开始</h3>
+                                <p class="timeline__description">
+                                    五星红旗在天安门广场升起，纪念大会正式开启。
+                                </p>
+                            </div>
+                        </li>
+                        <li class="timeline__item">
+                            <time class="timeline__date">2025年9月3日 9:15</time>
+                            <div class="timeline__content">
+                                <h3 class="timeline__title">习近平发表重要讲话</h3>
+                                <p class="timeline__description">
+                                    习近平发表重要讲话并下达检阅开始命令。
+                                </p>
+                            </div>
+                        </li>
+                        <li class="timeline__item">
+                            <time class="timeline__date">2025年9月3日 9:44</time>
+                            <div class="timeline__content">
+                                <h3 class="timeline__title">阅兵分列式开始</h3>
+                                <p class="timeline__description">
+                                    空中护旗梯队率先亮相，揭开阅兵分列式序幕。
+                                </p>
+                            </div>
+                        </li>
+
+                        <li class="timeline__item">
+                            <time class="timeline__date">2025年9月3日 14:10</time>
+                            <div class="timeline__content">
+                                <h3 class="timeline__title">阅兵仪式圆满结束</h3>
+                                <p class="timeline__description">
+                                    放飞和平鸽和气球，阅兵仪式圆满结束。
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </article>
+        </div>
+
+        <section class="chapter-bar" data-chapter="4">
+            <span class="number">4</span>
+            <span class="of"> / 7</span>
+            <div class="dash"></div>
+        </section>
+
+        <div class="content-section">
+            <article class="info-card">
+                <header class="info-card__header">
+                    <div class="info-card__header-title">
+                        <span class="info-card__icon">🚀</span>
+                        <h2 class="info-card__title">军事装备展示</h2>
+                    </div>
+                </header>
+                <div class="info-card__body">
+                    <div class="comparison-section">
+                        <h3 style="font-size: 16px; padding: 10px">
+                            <span style="color: var(--color-primary)">1</span> 战略打击力量
+                        </h3>
+                        <div class="comparison-cards">
+                            <div class="comparison-card comparison-card--local">
+                                <div>
+                                    <span style="font-size: 20px; font-weight: 700;">东风-5C</span>
+                                    <div style="font-size: 12px; margin: 5px 0;">液体洲际战略核导弹</div>
+                                    <div style="font-size: 10px;">打击范围覆盖全球</div>
+                                </div>
+                            </div>
+                            <div class="comparison-card comparison-card--external">
+                                <div>
+                                    <span style="font-size: 20px; font-weight: 700;">东风-61</span>
+                                    <div style="font-size: 12px; margin: 5px 0;">陆基洲际导弹</div>
+                                    <div style="font-size: 10px;">首次公开亮相</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <div class="equipment-section__header">
+                            <span class="equipment-section__icon" style="background: #0c4da2">
+                                <span class="icon-text">空</span>
+                            </span>
+                            <h3 class="equipment-section__title">空中装备</h3>
+                        </div>
+
+                        <div class="equipment-grid">
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #0c4da2;">歼-20<br>隐形战机</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #0c4da2;">歼-35A<br>舰载战机</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #0c4da2;">运-20<br>运输机</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #0c4da2;">空警-600<br>预警机</button>
+                        </div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <div class="equipment-section__header">
+                            <span class="equipment-section__icon" style="background: #006400">
+                                <span class="icon-text">陆</span>
+                            </span>
+                            <h3 class="equipment-section__title">陆上装备</h3>
+                        </div>
+
+                        <div class="equipment-grid">
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #006400;">100式坦克<br>主战坦克</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #006400;">红旗-29<br>反导系统</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #006400;">空降战车<br>新一代</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #006400;">无人作战<br>车辆</button>
+                        </div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <div class="equipment-section__header">
+                            <span class="equipment-section__icon" style="background: #00008B">
+                                <span class="icon-text">海</span>
+                            </span>
+                            <h3 class="equipment-section__title">海上装备</h3>
+                        </div>
+
+                        <div class="equipment-grid">
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #00008B;">巨浪-3<br>潜射导弹</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #00008B;">鹰击-17/19/20<br>反舰导弹</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #00008B;">海上无人<br>作战平台</button>
+                            <button class="equipment-item" style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #00008B;">LY-1<br>舰载激光武器</button>
+                        </div>
+                    </div>
+
+                    <div class="tag-group">
+                        <span class="tag tag--primary">装备高新化</span>
+                        <span class="tag tag--info">威慑能力提升</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <section class="chapter-bar" data-chapter="5">
+            <span class="number">5</span>
+            <span class="of"> / 7</span>
+            <div class="dash"></div>
+        </section>
+
+        <div class="content-section">
+            <article class="info-card">
+                <header class="info-card__header">
+                    <div class="info-card__header-title">
+                        <span class="info-card__icon">🌏</span>
+                        <h2 class="info-card__title">国际参与</h2>
+                    </div>
+                </header>
+                <div class="info-card__body">
+                    <p style="font-size: 14px; margin-bottom: 15px;">
+                        <strong>共有26个国家的领导人</strong>出席了此次阅兵仪式，展现了国际社会对中国的支持与认可。
+                    </p>
+
+                    <div class="country-grid">
+                        <div class="country-card">
+                            <div class="country-card__flag">🇷🇺</div>
+                            <div class="country-card__name">俄罗斯</div>
+                            <div class="country-card__leader">普京总统</div>
+                        </div>
+                        <div class="country-card">
+                            <div class="country-card__flag">🇰🇵</div>
+                            <div class="country-card__name">朝鲜</div>
+                            <div class="country-card__leader">金正恩委员长</div>
+                        </div>
+                        <div class="country-card">
+                            <div class="country-card__flag">🇮🇷</div>
+                            <div class="country-card__name">伊朗</div>
+                            <div class="country-card__leader">佩泽希齐扬总统</div>
+                        </div>
+                        <div class="country-card">
+                            <div class="country-card__flag">🇮🇩</div>
+                            <div class="country-card__name">印度尼西亚</div>
+                            <div class="country-card__leader">普拉博沃总统</div>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 14px; margin: 15px 0 10px 0;">
+                        <strong>日本阻挠未果</strong>
+                    </p>
+                    <p style="font-size: 13px; line-height: 1.5; color: #333; margin-bottom: 15px;">
+                        日本曾针对中国九三大阅兵活动外交施压多国不要参与，并渲染"中国威胁"，但这一图谋最终未能得逞。众多国家领导人的出席表明国际社会不认同日本的观点。
+                    </p>
+
+                    <div class="tag-group">
+                        <span class="tag tag--secondary">国际支持</span>
+                        <span class="tag tag--danger">日本阻挠失败</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <section class="chapter-bar" data-chapter="6">
+            <span class="number">6</span>
+            <span class="of"> / 7</span>
+            <div class="dash"></div>
+        </section>
+
+        <div class="content-section">
+            <article class="info-card">
+                <header class="info-card__header">
+                    <div class="info-card__header-title">
+                        <span class="info-card__icon">📜</span>
+                        <h2 class="info-card__title">历史意义</h2>
+                    </div>
+                </header>
+                <div class="info-card__body">
+                    <div class="quote-section">
+                        <article class="quote">
+                            <div class="quote__header">
+                                <div class="quote__meta">
+                                    <h4 class="quote__author">网友</h4>
+                                    <time class="quote__date">2025年9月3日</time>
+                                </div>
+                            </div>
+                            <div class="quote__content">
+                                <p>
+                                    不是哥们你你你真有激光炮啊？？看傻了
+                                    #93阅兵 #阅兵 #军事 #激光 #新武器
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <p style="font-size: 14px; font-weight: 600; color: #333; margin: 15px 0 10px 0; text-align: center;">
+                        观礼名人
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                        <span style="background: #f5f5f5; padding: 5px 10px; border-radius: 20px; font-size: 12px;">姚明</span>
+                        <span style="background: #f5f5f5; padding: 5px 10px; border-radius: 20px; font-size: 12px;">苏炳添</span>
+                        <span style="background: #f5f5f5; padding: 5px 10px; border-radius: 20px; font-size: 12px;">郑钦文</span>
+                        <span style="background: #f5f5f5; padding: 5px 10px; border-radius: 20px; font-size: 12px;">马龙</span>
+                        <span style="background: #f5f5f5; padding: 5px 10px; border-radius: 20px; font-size: 12px;">陈梦</span>
+                        <span style="background: #f5f5f5; padding: 5px 10px; border-radius: 20px; font-size: 12px;">钟南山</span>
+                    </div>
+
+                    <div class="tag-group">
+                        <span class="tag tag--primary">全民关注</span>
+                        <span class="tag tag--success">爱国热情</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <section class="chapter-bar" data-chapter="7">
+            <span class="number">7</span>
+            <span class="of"> / 7</span>
+            <div class="dash"></div>
+        </section>
+
+        <div class="content-section">
+            <article class="info-card">
+                <header class="info-card__header">
+                    <div class="info-card__header-title">
+                        <span class="info-card__icon">💬</span>
+                        <h2 class="info-card__title">社会反响</h2>
+                    </div>
+                </header>
+                <div class="info-card__body">
+                    <div style="background: var(--color-bg-light); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                        <p style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 10px;">
+                            抗战胜利80周年纪念的重要性
+                        </p>
+                        <p style="font-size: 13px; line-height: 1.6; color: #333;">
+                            这次阅兵是纪念中国人民抗日战争暨世界反法西斯战争胜利80周年的重要活动，不仅回顾历史、缅怀先烈，更彰显了中国坚定维护世界和平的决心和实力。
+                        </p>
+                    </div>
+
+                    <div style="background: var(--color-bg-light); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                        <p style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 10px;">
+                            展示军队现代化建设成果
+                        </p>
+                        <p style="font-size: 13px; line-height: 1.6; color: #333;">
+                            此次阅兵展示了中国军队现代化建设的最新成果，多种新型武器装备首次亮相，呈现了人民军队力量结构新布局、现代化建设新进展和备战打仗新成效。
+                        </p>
+                    </div>
+
+                    <div style="background: var(--color-bg-light); border-radius: 8px; padding: 15px;">
+                        <p style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 10px;">
+                            国际影响力的彰显
+                        </p>
+                        <p style="font-size: 13px; line-height: 1.6; color: #333;">
+                            26个国家的领导人出席观礼，表明国际社会对中国的认可和支持。此次阅兵向世界传递出中国坚决维护世界和平、推动构建人类命运共同体的坚定信念。
+                        </p>
+                    </div>
+
+
+                </div>
+            </article>
+        </div>
+        
+        <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+            由AI辅助生成，经过人工校验
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal-container" id="modalContainer" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title">参考资料</h3>
+                <button class="close-btn" onclick="closeModal(event)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="reference-list" id="referenceList">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const referenceData = [
+            {
+                title: '习近平：在纪念中国人民抗日战争暨世界反法西斯战争胜利80周年大会上的讲话',
+                source: '人民日报',
+                author: '人民日报',
+                url: '#'
+            },
+            {
+                title: '九三阅兵完整视频！（收藏版）',
+                source: '新华社',
+                author: '新华社',
+                url: '#'
+            },
+            {
+                title: '纪念中国人民抗日战争暨世界反法西斯战争胜利80周年大会在京隆重举行',
+                source: '央视新闻',
+                author: '央视新闻',
+                url: '#'
+            },
+            {
+                title: '冲上热搜！东风-5C，帅照来了',
+                source: '新华社',
+                author: '新华社',
+                url: '#'
+            },
+            {
+                title: '不装了！一口气看完九三大阅兵武器装备！谁说我们一个也不认识的？',
+                source: '军武次位面',
+                author: '军武次位面',
+                url: '#'
+            },
+            {
+                title: '高清大图！习近平出席纪念抗战胜利80周年大会',
+                source: '人民网',
+                author: '人民网',
+                url: '#'
+            },
+            {
+                title: '这次阅兵式有多强？都在这15个关键词里了',
+                source: '果壳',
+                author: '果壳',
+                url: '#'
+            },
+            {
+                title: '100式坦克？红旗-29？东风-61？九三阅兵都有哪些亮点？军迷直呼：过年了！',
+                source: '大伊万频道',
+                author: '大伊万频道',
+                url: '#'
+            },
+            {
+                title: '隆重壮观！中国兵器研制生产的30余型装备盛大亮相九三阅兵接受检阅！',
+                source: '中国兵器工业集团',
+                author: '中国兵器工业集团',
+                url: '#'
+            },
+            {
+                title: '23个装备方队完整视频',
+                source: '央视新闻',
+                author: '央视新闻',
+                url: '#'
+            }
+        ];
+
+        function catmullRom(p0, p1, p2, p3, t) {
+            const t2 = t * t;
+            const t3 = t2 * t;
+            
+            return 0.5 * (
+                2 * p1 +
+                (-p0 + p2) * t +
+                (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+                (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+            );
+        }
+
+        function drawTrendCurve() {
+            const canvas = document.getElementById('trendCanvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const CANVAS_WIDTH = 375;
+            const CANVAS_HEIGHT = 200;
+            const SCALE_FACTOR = 3;
+            const CALC_HEIGHT = CANVAS_HEIGHT * SCALE_FACTOR;
+            
+            const trendData = [
+                { 
+                    value: 100,  
+                    date: '8月28日',
+                    x: 63,
+                    opacity: 0.5,
+                    isActive: false
+                },
+                { 
+                    value: 250, 
+                    date: '9月1日',
+                    x: 167,
+                    opacity: 0.5,
+                    isActive: false
+                },
+                { 
+                    value: 380, 
+                    date: '9月3日',
+                    x: 272,
+                    opacity: 1,
+                    isActive: true
+                }
+            ];
+            
+            function valueToY(value) {
+                const invertedY = CALC_HEIGHT - value;
+                return invertedY / SCALE_FACTOR;
+            }
+            
+            const points = trendData.map(data => ({
+                ...data,
+                y: valueToY(data.value)
+            }));
+            
+            const startPoint = { x: 0, y: valueToY(0) };
+            const endPoint = { x: CANVAS_WIDTH, y: 0 };
+            const curvePoints = [startPoint, ...points, endPoint];
+            
+            ctx.beginPath();
+            ctx.moveTo(curvePoints[0].x, curvePoints[0].y);
+
+            for (let i = 0; i < curvePoints.length - 1; i++) {
+                const p0 = curvePoints[Math.max(i - 1, 0)];
+                const p1 = curvePoints[i];
+                const p2 = curvePoints[i + 1];
+                const p3 = curvePoints[Math.min(i + 2, curvePoints.length - 1)];
+
+                for (let t = 0; t <= 1; t += 0.05) {
+                    const x = catmullRom(p0.x, p1.x, p2.x, p3.x, t);
+                    const y = catmullRom(p0.y, p1.y, p2.y, p3.y, t);
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            const gradient = ctx.createLinearGradient(0, 100, CANVAS_WIDTH, 0);
+            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.2)');
+            gradient.addColorStop(0.4, 'rgba(255, 215, 0, 0.5)');
+            gradient.addColorStop(0.7, 'rgba(255, 180, 0, 0.8)');
+            gradient.addColorStop(1, 'rgba(255, 140, 0, 1)');
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 3;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
+            ctx.stroke();
+
+            ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT);
+            ctx.lineTo(0, CANVAS_HEIGHT);
+            ctx.closePath();
+
+            const fillGradient = ctx.createLinearGradient(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            fillGradient.addColorStop(0, 'rgba(255, 215, 0, 0.02)');
+            fillGradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.08)');
+            fillGradient.addColorStop(0.8, 'rgba(255, 180, 0, 0.15)');
+            fillGradient.addColorStop(1, 'rgba(255, 140, 0, 0.25)');
+
+            ctx.fillStyle = fillGradient;
+            ctx.shadowBlur = 0;
+            ctx.fill();
+
+            points.forEach((point, index) => {
+                const radius = point.isActive ? 15 : 10;
+                const glow = ctx.createRadialGradient(
+                    point.x, point.y, 0,
+                    point.x, point.y, radius
+                );
+                glow.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
+                glow.addColorStop(1, 'rgba(255, 215, 0, 0)');
+
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            generateTrendPoints(points);
+        }
+
+        function generateTrendPoints(points) {
+            const container = document.getElementById('trendPoints');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            points.forEach(point => {
+                const pointDiv = document.createElement('div');
+                pointDiv.className = `trend-point${point.opacity < 1 ? ' opacity-50' : ''}`;
+                
+                const textOffset = 7;
+                
+                pointDiv.style.cssText = `
+                    left: ${point.x - textOffset}px;
+                    top: ${point.y - textOffset}px;
+                `;
+                
+                const dot = document.createElement('div');
+                dot.className = `trend-dot${point.opacity < 1 ? ' opacity-50' : ''}`;
+                
+                const label = document.createElement('div');
+                label.innerHTML = ``;
+                
+                pointDiv.appendChild(dot);
+                pointDiv.appendChild(label);
+                container.appendChild(pointDiv);
+            });
+
+            points.forEach(point => {
+                const pointDiv = document.createElement('div');
+                pointDiv.className = `trend-point${point.opacity < 1 ? ' opacity-50' : ''}`;
+                
+                const textOffset = 30;
+                
+                pointDiv.style.cssText = `
+                    left: ${point.x - textOffset}px;
+                    top: ${point.y - textOffset}px;
+                `;
+                
+                const label = document.createElement('div');
+                label.innerHTML = `网络关注度${point.value}万<br />${point.date}`;
+                
+                pointDiv.appendChild(label);
+                container.appendChild(pointDiv);
+            });
+        }
+
+        function animateAttentionNumbers() {
+            const points = document.querySelectorAll('.trend-point');
+            points.forEach((point, index) => {
+                setTimeout(() => {
+                    point.style.animation = 'fadeInUp 0.6s ease-out';
+                }, index * 200);
+            });
+        }
+
+        let currentButton = null;
+
+        function toggleModal(event, button) {
+            event.stopPropagation();
+            
+            const overlay = document.getElementById('modalOverlay');
+            const referenceList = document.getElementById('referenceList');
+            
+            referenceList.innerHTML = '';
+            referenceData.forEach((ref, index) => {
+                const li = document.createElement('li');
+                li.className = 'reference-item';
+                li.innerHTML = `
+                    <a href="${ref.url}" target="_blank" class="reference-link" onclick="event.preventDefault()">
+                        <span class="reference-number">${index + 1}</span>
+                        <div class="reference-content">
+                            <div class="reference-title">${ref.title}</div>
+                            <div class="reference-source">${ref.source}</div>
+                        </div>
+                    </a>
+                `;
+                referenceList.appendChild(li);
+            });
+            
+            overlay.classList.add('show');
+            button.classList.add('active');
+            currentButton = button;
+        }
+
+        function closeModal(event) {
+            event.stopPropagation();
+            const overlay = document.getElementById('modalOverlay');
+            overlay.classList.remove('show');
+            
+            if (currentButton) {
+                currentButton.classList.remove('active');
+                currentButton = null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(drawTrendCurve, 100);
+            animateAttentionNumbers();
+        });
+
+        window.addEventListener('resize', () => {
+            setTimeout(drawTrendCurve, 100);
+        });
+
+        document.addEventListener('click', function(event) {
+            const overlay = document.getElementById('modalOverlay');
+            if (overlay.classList.contains('show') && !event.target.closest('.reference-button')) {
+                closeModal(event);
+            }
+        });
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const element = entry.target;
+                        
+                        if (element.classList.contains('chapter-bar')) {
+                            element.style.animation = 'fadeInUp 0.6s ease-out';
+                            
+                            document.querySelectorAll('.chapter-bar').forEach(bar => {
+                                bar.classList.remove('active');
+                            });
+                            element.classList.add('active');
+                        }
+                        
+                        if (element.classList.contains('info-card')) {
+                            element.style.animation = 'fadeInUp 0.5s ease-out';
+                        }
+                        
+                        observer.unobserve(element);
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
+
+        document.querySelectorAll('.chapter-bar, .info-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X JAPAN 管理后台 - 仪表板</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <h2>X JAPAN</h2>
+                <p style="color: var(--text-light-gray); font-size: 0.9rem;">管理后台</p>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                            </svg>
+                            仪表板
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#concerts" class="nav-link" data-section="concerts">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                            </svg>
+                            演出管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#news" class="nav-link" data-section="news">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                            新闻管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#social" class="nav-link" data-section="social">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                            </svg>
+                            社交媒体
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#media" class="nav-link" data-section="media">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                            </svg>
+                            媒体库
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#settings" class="nav-link" data-section="settings">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                            </svg>
+                            网站设置
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#links" class="nav-link" data-section="links">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H6.9C3.64 7 1 9.64 1 12.9s2.64 5.9 5.9 5.9h4v-1.9H6.9c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9.1-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c3.25 0 5.9-2.64 5.9-5.9S20.35 7 17.1 7z"/>
+                            </svg>
+                            链接管理
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="admin-main">
+            <!-- 顶部导航 -->
+            <header class="admin-header">
+                <div class="header-title">
+                    <h1 id="pageTitle">仪表板</h1>
+                </div>
+                <div class="header-actions">
+                    <div class="user-menu" onclick="toggleUserDropdown()">
+                        <span>管理员 (admin)</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                        <div class="user-dropdown" id="userDropdown" style="display: none;">
+                            <div class="dropdown-item">
+                                <strong>当前用户</strong><br>
+                                <span style="color: var(--text-light-gray);">admin</span>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item" onclick="logout()">退出登录</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 内容区域 -->
+            <div class="admin-content" id="adminContent">
+                <!-- 仪表板内容 -->
+                <div class="content-section active" id="dashboard-section">
+                    <div class="dashboard-stats">
+                        <div class="stat-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                            <div class="stat-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                                <h3 style="color: var(--accent-red); font-size: 2rem; margin-bottom: 5px;">12</h3>
+                                <p style="color: var(--text-gray);">演出活动</p>
+                            </div>
+                            <div class="stat-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                                <h3 style="color: var(--accent-red); font-size: 2rem; margin-bottom: 5px;">28</h3>
+                                <p style="color: var(--text-gray);">新闻报道</p>
+                            </div>
+                            <div class="stat-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                                <h3 style="color: var(--accent-red); font-size: 2rem; margin-bottom: 5px;">156</h3>
+                                <p style="color: var(--text-gray);">社交动态</p>
+                            </div>
+                            <div class="stat-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                                <h3 style="color: var(--accent-red); font-size: 2rem; margin-bottom: 5px;">89</h3>
+                                <p style="color: var(--text-gray);">媒体文件</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-activity" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                        <h3 style="color: var(--text-white); margin-bottom: 20px; font-family: 'Orbitron', sans-serif;">最近活动</h3>
+                        <div class="activity-list">
+                            <div class="activity-item" style="padding: 15px 0; border-bottom: 1px solid var(--border-gray);">
+                                <p style="color: var(--text-white); margin-bottom: 5px;">添加了新的演出信息：东京巨蛋演唱会</p>
+                                <span style="color: var(--text-light-gray); font-size: 0.9rem;">2024年10月16日 20:30</span>
+                            </div>
+                            <div class="activity-item" style="padding: 15px 0; border-bottom: 1px solid var(--border-gray);">
+                                <p style="color: var(--text-white); margin-bottom: 5px;">发布了新闻：X JAPAN 30周年纪念专辑发布</p>
+                                <span style="color: var(--text-light-gray); font-size: 0.9rem;">2024年10月16日 18:15</span>
+                            </div>
+                            <div class="activity-item" style="padding: 15px 0;">
+                                <p style="color: var(--text-white); margin-bottom: 5px;">更新了社交媒体动态</p>
+                                <span style="color: var(--text-light-gray); font-size: 0.9rem;">2024年10月16日 16:45</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 演出管理内容 -->
+                <div class="content-section" id="concerts-section" style="display: none;">
+                    <div class="content-header">
+                        <h2 class="content-title">演出管理</h2>
+                        <button class="add-btn" onclick="openEditor('concert')">添加演出</button>
+                    </div>
+                    <div class="content-grid" id="concertsGrid">
+                        <!-- 演出内容将通过 JavaScript 动态加载 -->
+                    </div>
+                </div>
+
+                <!-- 新闻管理内容 -->
+                <div class="content-section" id="news-section" style="display: none;">
+                    <div class="content-header">
+                        <h2 class="content-title">新闻管理</h2>
+                        <button class="add-btn" onclick="openEditor('news')">添加新闻</button>
+                    </div>
+                    <div class="content-grid" id="newsGrid">
+                        <!-- 新闻内容将通过 JavaScript 动态加载 -->
+                    </div>
+                </div>
+
+                <!-- 社交媒体管理内容 -->
+                <div class="content-section" id="social-section" style="display: none;">
+                    <div class="content-header">
+                        <h2 class="content-title">社交媒体</h2>
+                        <button class="add-btn" onclick="openEditor('social')">添加动态</button>
+                    </div>
+                    <div class="content-grid" id="socialGrid">
+                        <!-- 社交媒体内容将通过 JavaScript 动态加载 -->
+                    </div>
+                </div>
+
+                <!-- 媒体库管理内容 -->
+                <div class="content-section" id="media-section" style="display: none;">
+                    <div class="content-header">
+                        <h2 class="content-title">媒体库</h2>
+                        <button class="add-btn" onclick="openMediaUpload()">上传文件</button>
+                    </div>
+                    <div class="media-grid" id="mediaGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                        <!-- 媒体文件将通过 JavaScript 动态加载 -->
+                    </div>
+                </div>
+
+                <!-- 网站设置内容 -->
+                <div class="content-section" id="settings-section" style="display: none;">
+                    <div class="content-header">
+                        <h2 class="content-title">网站设置</h2>
+                    </div>
+                    <div class="settings-grid" style="display: grid; gap: 30px;">
+                        <div class="settings-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                            <h3 style="color: var(--text-white); margin-bottom: 20px;">首页设置</h3>
+                            <div class="setting-item" style="margin-bottom: 20px;">
+                                <label style="color: var(--text-gray); display: block; margin-bottom: 8px;">英雄区域背景图</label>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="text" id="heroImageInput" style="flex: 1; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white);" readonly>
+                                    <button onclick="selectHeroImage()" style="background: var(--gradient-red); border: none; color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer;">选择图片</button>
+                                </div>
+                            </div>
+                            <div class="setting-item" style="margin-bottom: 20px;">
+                                <label style="color: var(--text-gray); display: block; margin-bottom: 8px;">背景音乐</label>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="text" id="backgroundMusicInput" style="flex: 1; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white);" readonly>
+                                    <button onclick="selectBackgroundMusic()" style="background: var(--gradient-red); border: none; color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer;">选择音频</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                            <h3 style="color: var(--text-white); margin-bottom: 20px;">文案设置</h3>
+                            <div class="setting-item" style="margin-bottom: 20px;">
+                                <label style="color: var(--text-gray); display: block; margin-bottom: 8px;">主标题</label>
+                                <input type="text" id="heroMainTitle" placeholder="X JAPAN" style="width: 100%; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white);">
+                            </div>
+                            <div class="setting-item" style="margin-bottom: 20px;">
+                                <label style="color: var(--text-gray); display: block; margin-bottom: 8px;">副标题</label>
+                                <input type="text" id="heroSubTitle" placeholder="永远的传说" style="width: 100%; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white);">
+                            </div>
+                            <div class="setting-item" style="margin-bottom: 20px;">
+                                <label style="color: var(--text-gray); display: block; margin-bottom: 8px;">描述文字</label>
+                                <textarea id="heroDescription" placeholder="视觉系摇滚的开拓者，音乐史上的不朽传奇" style="width: 100%; height: 80px; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white); resize: vertical;"></textarea>
+                            </div>
+                            <div class="setting-item" style="margin-bottom: 20px;">
+                                <label style="color: var(--text-gray); display: block; margin-bottom: 8px;">页脚标语</label>
+                                <input type="text" id="footerSlogan" placeholder="永远的传说，不朽的音乐" style="width: 100%; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white);">
+                            </div>
+                        </div>
+                        
+                        <div class="settings-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                            <h3 style="color: var(--text-white); margin-bottom: 20px;">弹窗内容设置</h3>
+                            <div class="popup-settings">
+                                <div class="setting-group" style="margin-bottom: 25px;">
+                                    <h4 style="color: var(--accent-silver); margin-bottom: 15px;">最新演出</h4>
+                                    <input type="text" id="latestConcertTitle" placeholder="标题" style="width: 100%; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white); margin-bottom: 10px;">
+                                    <textarea id="latestConcertContent" placeholder="内容" style="width: 100%; height: 100px; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white); margin-bottom: 10px; resize: vertical;"></textarea>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <input type="text" id="latestConcertImage" placeholder="图片路径" style="flex: 1; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white);" readonly>
+                                        <button onclick="selectPopupImage('latestConcert')" style="background: var(--gradient-red); border: none; color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer;">选择图片</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-group">
+                                    <h4 style="color: var(--accent-silver); margin-bottom: 15px;">乐队历史</h4>
+                                    <input type="text" id="bandHistoryTitle" placeholder="标题" style="width: 100%; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white); margin-bottom: 10px;">
+                                    <textarea id="bandHistoryContent" placeholder="内容" style="width: 100%; height: 100px; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white); margin-bottom: 10px; resize: vertical;"></textarea>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <input type="text" id="bandHistoryImage" placeholder="图片路径" style="flex: 1; background: var(--secondary-black); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px; color: var(--text-white);" readonly>
+                                        <button onclick="selectPopupImage('bandHistory')" style="background: var(--gradient-red); border: none; color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer;">选择图片</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="saveSettings()" style="background: var(--gradient-red); border: none; color: white; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: 600;">保存设置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 链接管理内容 -->
+                <div class="content-section" id="links-section" style="display: none;">
+                    <div class="content-header">
+                        <h2 class="content-title">链接管理</h2>
+                    </div>
+                    <div class="links-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div class="links-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                            <h3 style="color: var(--text-white); margin-bottom: 20px;">快速链接</h3>
+                            <div id="quickLinksContainer">
+                                <!-- 快速链接将通过 JavaScript 动态加载 -->
+                            </div>
+                            <button onclick="addQuickLink()" style="background: var(--gradient-red); border: none; color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-top: 15px;">添加链接</button>
+                        </div>
+                        
+                        <div class="links-card" style="background: var(--card-black); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray);">
+                            <h3 style="color: var(--text-white); margin-bottom: 20px;">社交媒体链接</h3>
+                            <div id="socialLinksContainer">
+                                <!-- 社交媒体链接将通过 JavaScript 动态加载 -->
+                            </div>
+                            <button onclick="addSocialLink()" style="background: var(--gradient-red); border: none; color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-top: 15px;">添加链接</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 编辑器模态框 -->
+    <div class="modal-overlay" id="editorModal" style="display: none;">
+        <div class="modal-content" style="background: var(--card-black); border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 id="editorTitle" style="color: var(--text-white); font-family: 'Orbitron', sans-serif;">编辑内容</h3>
+                <button class="close-btn" onclick="closeEditor()" style="background: none; border: none; color: var(--text-gray); font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <form id="contentForm">
+                <div id="editorFields">
+                    <!-- 编辑器字段将通过 JavaScript 动态生成 -->
+                </div>
+                <div class="modal-actions" style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 25px;">
+                    <button type="button" class="cancel-btn" onclick="closeEditor()" style="background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); padding: 10px 20px; border-radius: 8px; cursor: pointer;">取消</button>
+                    <button type="submit" class="save-btn" style="background: var(--gradient-red); border: none; color: var(--text-white); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

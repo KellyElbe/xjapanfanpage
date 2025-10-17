@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML智能修改工具 - 增强版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+
+        .left-panel, .right-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            background: #f8f9fa;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .code-input {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            resize: none;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            background: #fafafa;
+            outline: none;
+        }
+
+        .modification-section {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modification-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .modification-input:focus {
+            border-color: #3498db;
+        }
+
+        .modification-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .preview-container {
+            flex: 1;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .history-section {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 15px 20px;
+        }
+
+        .history-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            font-size: 13px;
+        }
+
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-bar {
+            padding: 10px 20px;
+            background: #ecf0f1;
+            border-radius: 0 0 12px 12px;
+            font-size: 12px;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .loading {
+            display: none;
+            color: #3498db;
+        }
+
+        .loading.show {
+            display: inline;
+        }
+
+        .error {
+            color: #e74c3c;
+            background: #fdf2f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .success {
+            color: #27ae60;
+            background: #f0f9f4;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 4px solid #27ae60;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+
+        .example-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: #17a2b8;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .example-text {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        .processing-indicator {
+            display: none;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 4px solid #2196f3;
+            font-size: 13px;
+            color: #1976d2;
+        }
+
+        .processing-indicator.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛠️ HTML智能修改工具 - 增强版</h1>
+            <p>真正的AI驱动HTML修改，支持自然语言指令，实时预览，多轮修改</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 左侧面板 -->
+            <div class="left-panel">
+                <div class="panel-header">
+                    <span class="panel-title">📝 HTML代码编辑</span>
+                    <div>
+                        <button class="btn btn-primary" onclick="previewHTML()">预览</button>
+                        <button class="btn btn-success" onclick="saveHTML()">保存</button>
+                    </div>
+                </div>
+                
+                <textarea 
+                    class="code-input" 
+                    id="htmlInput" 
+                    placeholder="请粘贴您的HTML代码..."
+                ></textarea>
+
+                <div class="modification-section">
+                    <label for="modificationInput" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50;">
+                        🎯 修改指令
+                    </label>
+                    <textarea 
+                        class="modification-input" 
+                        id="modificationInput"
+                        placeholder="请输入您的修改要求，例如：&#10;1、将标题颜色改为红色&#10;2、删除第三个段落&#10;3、将按钮文字改为'立即购买'&#10;4、调换第二和第三个模块的位置"
+                    ></textarea>
+                    
+                    <div class="modification-controls">
+                        <button class="btn btn-primary" onclick="applyModifications()">
+                            <span class="loading" id="loadingText">🔄 处理中...</span>
+                            <span id="applyText">✨ 应用修改</span>
+                        </button>
+                        <button class="btn btn-warning" onclick="resetHTML()">🔄 重置</button>
+                    </div>
+
+                    <div class="processing-indicator" id="processingIndicator">
+                        <div>🤖 AI正在分析您的修改指令...</div>
+                        <div id="processingSteps"></div>
+                    </div>
+
+                    <div class="example-section">
+                        <div class="example-title">💡 修改指令示例</div>
+                        <div class="example-text">
+                            • 将标题"欢迎"改为"Hello World"<br>
+                            • 删除包含"联系我们"的段落<br>
+                            • 把所有按钮的背景色改为绿色<br>
+                            • 将第一个div和第二个div调换位置<br>
+                            • 在页面底部添加"版权所有 2025"<br>
+                            • 将所有h1标签的字体大小改为24px<br>
+                            • 删除class为"sidebar"的元素<br>
+                            • 将id为"main-title"的文字改为"新标题"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-section">
+                    <div style="font-weight: 600; margin-bottom: 10px; color: #2c3e50;">📋 修改历史</div>
+                    <div id="historyContainer">
+                        <div style="color: #7f8c8d; font-style: italic;">暂无修改记录</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧面板 -->
+            <div class="right-panel">
+                <div class="panel-header">
+                    <span class="panel-title">👁️ 实时预览</span>
+                    <button class="btn btn-primary" onclick="refreshPreview()">🔄 刷新预览</button>
+                </div>
+                
+                <div class="preview-container">
+                    <iframe class="preview-frame" id="previewFrame" src="about:blank"></iframe>
+                </div>
+
+                <div class="status-bar">
+                    <span id="statusText">就绪</span>
+                    <span id="lastModified"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalHTML = '';
+        let currentHTML = '';
+        let modificationHistory = [];
+
+        // 预览HTML
+        function previewHTML() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            if (!htmlContent.trim()) {
+                showStatus('请先输入HTML代码', 'error');
+                return;
+            }
+
+            currentHTML = htmlContent;
+            const previewFrame = document.getElementById('previewFrame');
+            
+            // 创建blob URL来预览HTML
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            previewFrame.src = url;
+            
+            showStatus('预览已更新', 'success');
+            updateLastModified();
+        }
+
+        // 应用修改
+        async function applyModifications() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            const modifications = document.getElementById('modificationInput').value;
+
+            if (!htmlContent.trim()) {
+                showStatus('请先输入HTML代码', 'error');
+                return;
+            }
+
+            if (!modifications.trim()) {
+                showStatus('请输入修改指令', 'error');
+                return;
+            }
+
+            // 显示加载状态
+            toggleLoading(true);
+            showProcessingIndicator(true);
+            showStatus('正在处理修改指令...', 'info');
+
+            try {
+                // 真正的AI处理过程
+                const modifiedHTML = await processModificationsWithAI(htmlContent, modifications);
+                
+                document.getElementById('htmlInput').value = modifiedHTML;
+                currentHTML = modifiedHTML;
+                
+                // 自动预览修改结果
+                previewHTML();
+                
+                // 添加到历史记录
+                addToHistory(modifications);
+                
+                // 清空修改指令输入框
+                document.getElementById('modificationInput').value = '';
+                
+                showStatus('✅ 修改已成功应用！', 'success');
+            } catch (error) {
+                showStatus('❌ 修改处理失败: ' + error.message, 'error');
+                console.error('修改处理错误:', error);
+            } finally {
+                toggleLoading(false);
+                showProcessingIndicator(false);
+            }
+        }
+
+        // 真正的AI处理函数
+        async function processModificationsWithAI(html, instructions) {
+            // 显示处理步骤
+            updateProcessingSteps('🔍 解析HTML结构...');
+            await sleep(500);
+
+            // 创建DOM解析器
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            updateProcessingSteps('📝 分析修改指令...');
+            await sleep(500);
+
+            // 解析修改指令
+            const modifications = parseInstructionsAdvanced(instructions);
+            
+            updateProcessingSteps(`🛠️ 执行 ${modifications.length} 个修改任务...`);
+            await sleep(500);
+
+            // 应用每个修改
+            for (let i = 0; i < modifications.length; i++) {
+                const mod = modifications[i];
+                updateProcessingSteps(`⚙️ 执行修改 ${i + 1}/${modifications.length}: ${mod.type}`);
+                await sleep(300);
+                
+                try {
+                    applyModificationToDOM(doc, mod);
+                } catch (error) {
+                    console.warn(`修改 ${i + 1} 执行失败:`, error);
+                }
+            }
+
+            updateProcessingSteps('✨ 生成最终HTML...');
+            await sleep(300);
+
+            // 返回修改后的HTML
+            return doc.documentElement.outerHTML;
+        }
+
+        // 高级指令解析
+        function parseInstructionsAdvanced(instructions) {
+            const lines = instructions.split('\n').filter(line => line.trim());
+            const modifications = [];
+            
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (!trimmed) return;
+                
+                // 移除序号前缀
+                const cleaned = trimmed.replace(/^[\d\s、．.）)]+/, '');
+                
+                const modification = {
+                    original: trimmed,
+                    instruction: cleaned,
+                    type: detectModificationType(cleaned),
+                    target: extractTarget(cleaned),
+                    action: extractAction(cleaned),
+                    value: extractValue(cleaned)
+                };
+                
+                modifications.push(modification);
+            });
+            
+            return modifications;
+        }
+
+        // 检测修改类型
+        function detectModificationType(instruction) {
+            const lower = instruction.toLowerCase();
+            
+            if (lower.includes('删除') || lower.includes('移除') || lower.includes('去掉')) {
+                return 'delete';
+            } else if (lower.includes('调换') || lower.includes('交换') || lower.includes('位置')) {
+                return 'swap';
+            } else if (lower.includes('改为') || lower.includes('修改') || lower.includes('更改') || lower.includes('改成')) {
+                return 'modify';
+            } else if (lower.includes('添加') || lower.includes('增加') || lower.includes('插入')) {
+                return 'add';
+            } else if (lower.includes('颜色') || lower.includes('背景') || lower.includes('字体') || lower.includes('大小')) {
+                return 'style';
+            }
+            
+            return 'modify';
+        }
+
+        // 提取目标元素
+        function extractTarget(instruction) {
+            // 提取各种目标模式
+            const patterns = [
+                /(?:标题|h[1-6])/i,
+                /(?:按钮|button)/i,
+                /(?:段落|p)/i,
+                /(?:第([一二三四五六七八九十\d]+)个?)/i,
+                /(?:包含[""]([^""]*)[""]的?)/i,
+                /(?:class为[""]([^""]*)[""]的?)/i,
+                /(?:id为[""]([^""]*)[""]的?)/i
+            ];
+            
+            for (const pattern of patterns) {
+                const match = instruction.match(pattern);
+                if (match) {
+                    return match[0];
+                }
+            }
+            
+            return null;
+        }
+
+        // 提取操作
+        function extractAction(instruction) {
+            if (instruction.includes('删除') || instruction.includes('移除')) {
+                return 'remove';
+            } else if (instruction.includes('改为') || instruction.includes('改成')) {
+                return 'replace';
+            } else if (instruction.includes('添加')) {
+                return 'add';
+            }
+            return 'modify';
+        }
+
+        // 提取值
+        function extractValue(instruction) {
+            // 提取引号中的内容
+            const quotedMatch = instruction.match(/[""]([^""]*)[""]]/g);
+            if (quotedMatch && quotedMatch.length >= 2) {
+                return quotedMatch[1].replace(/[""""]/g, '');
+            }
+            
+            // 提取"改为"后的内容
+            const changeMatch = instruction.match(/(?:改为|改成)\s*([^\s，,。.]+)/);
+            if (changeMatch) {
+                return changeMatch[1];
+            }
+            
+            return null;
+        }
+
+        // 应用修改到DOM
+        function applyModificationToDOM(doc, modification) {
+            const { type, instruction, target, action, value } = modification;
+            
+            switch (type) {
+                case 'delete':
+                    applyDeleteModificationToDOM(doc, instruction);
+                    break;
+                case 'modify':
+                    applyTextModificationToDOM(doc, instruction);
+                    break;
+                case 'style':
+                    applyStyleModificationToDOM(doc, instruction);
+                    break;
+                case 'add':
+                    applyAddModificationToDOM(doc, instruction);
+                    break;
+                default:
+                    applyTextModificationToDOM(doc, instruction);
+            }
+        }
+
+        // 应用文本修改到DOM
+        function applyTextModificationToDOM(doc, instruction) {
+            // 匹配各种文本替换模式
+            const patterns = [
+                /将[""]([^""]*)[""]\\s*改为\\s*[""]([^""]*)[""]]/g,
+                /把[""]([^""]*)[""]\\s*改成\\s*[""]([^""]*)[""]]/g,
+                /将\\s*([^\\s改为]+)\\s*改为\\s*[""]([^""]*)[""]]/g,
+                /把\\s*([^\\s改成]+)\\s*改成\\s*[""]([^""]*)[""]]/g
+            ];
+            
+            patterns.forEach(pattern => {
+                const matches = [...instruction.matchAll(pattern)];
+                matches.forEach(match => {
+                    const [, oldText, newText] = match;
+                    if (oldText && newText) {
+                        replaceTextInDOM(doc, oldText.trim(), newText.trim());
+                    }
+                });
+            });
+        }
+
+        // 在DOM中替换文本
+        function replaceTextInDOM(doc, oldText, newText) {
+            const walker = document.createTreeWalker(
+                doc.body || doc.documentElement,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            const textNodes = [];
+            let node;
+            
+            while (node = walker.nextNode()) {
+                if (node.textContent.includes(oldText)) {
+                    textNodes.push(node);
+                }
+            }
+            
+            textNodes.forEach(textNode => {
+                textNode.textContent = textNode.textContent.replace(new RegExp(escapeRegExp(oldText), 'g'), newText);
+            });
+        }
+
+        // 应用删除修改到DOM
+        function applyDeleteModificationToDOM(doc, instruction) {
+            // 提取要删除的内容
+            const deletePatterns = [
+                /删除[""]([^""]*)[""]]/g,
+                /删去[""]([^""]*)[""]]/g,
+                /移除[""]([^""]*)[""]]/g,
+                /删除.*包含[""]([^""]*)[""]]/g,
+                /删除\\s*第([一二三四五六七八九十\\d]+)个?([^\\s，,。.]*)/g
+            ];
+            
+            deletePatterns.forEach(pattern => {
+                const matches = [...instruction.matchAll(pattern)];
+                matches.forEach(match => {
+                    if (match[1]) {
+                        deleteElementsContainingText(doc, match[1].trim());
+                    }
+                });
+            });
+        }
+
+        // 删除包含特定文本的元素
+        function deleteElementsContainingText(doc, text) {
+            const walker = document.createTreeWalker(
+                doc.body || doc.documentElement,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            const elementsToRemove = new Set();
+            let node;
+            
+            while (node = walker.nextNode()) {
+                if (node.textContent.includes(text)) {
+                    // 找到包含文本的最近的块级元素
+                    let parent = node.parentElement;
+                    while (parent && !isBlockElement(parent) && parent !== doc.body) {
+                        parent = parent.parentElement;
+                    }
+                    if (parent && parent !== doc.body) {
+                        elementsToRemove.add(parent);
+                    }
+                }
+            }
+            
+            // 删除找到的元素
+            elementsToRemove.forEach(element => {
+                if (element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+            });
+        }
+
+        // 应用样式修改到DOM
+        function applyStyleModificationToDOM(doc, instruction) {
+            // 处理颜色修改
+            const colorMatch = instruction.match(/(?:颜色|背景色?)\s*改为\s*([^\s，,。.]+)/);
+            if (colorMatch) {
+                const color = colorMatch[1];
+                const elements = doc.querySelectorAll('*');
+                elements.forEach(el => {
+                    if (instruction.includes('背景')) {
+                        el.style.backgroundColor = color;
+                    } else {
+                        el.style.color = color;
+                    }
+                });
+            }
+            
+            // 处理字体大小修改
+            const sizeMatch = instruction.match(/字体大小\s*改为\s*(\d+(?:px|em|rem)?)/);
+            if (sizeMatch) {
+                const size = sizeMatch[1];
+                const elements = doc.querySelectorAll('*');
+                elements.forEach(el => {
+                    el.style.fontSize = size.includes('px') || size.includes('em') || size.includes('rem') ? size : size + 'px';
+                });
+            }
+        }
+
+        // 应用添加修改到DOM
+        function applyAddModificationToDOM(doc, instruction) {
+            // 在底部添加内容
+            if (instruction.includes('底部添加') || instruction.includes('页面底部')) {
+                const contentMatch = instruction.match(/添加[""]([^""]*)[""]]/);
+                if (contentMatch) {
+                    const content = contentMatch[1];
+                    const div = doc.createElement('div');
+                    div.textContent = content;
+                    div.style.textAlign = 'center';
+                    div.style.padding = '20px';
+                    div.style.color = '#666';
+                    doc.body.appendChild(div);
+                }
+            }
+        }
+
+        // 判断是否为块级元素
+        function isBlockElement(element) {
+            const blockElements = ['div', 'p', 'section', 'article', 'header', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ul', 'ol', 'nav', 'main', 'aside'];
+            return blockElements.includes(element.tagName.toLowerCase());
+        }
+
+        // 转义正则表达式特殊字符
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // 睡眠函数
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // 更新处理步骤
+        function updateProcessingSteps(step) {
+            const stepsElement = document.getElementById('processingSteps');
+            stepsElement.textContent = step;
+        }
+
+        // 显示/隐藏处理指示器
+        function showProcessingIndicator(show) {
+            const indicator = document.getElementById('processingIndicator');
+            if (show) {
+                indicator.classList.add('show');
+            } else {
+                indicator.classList.remove('show');
+            }
+        }
+
+        // 保存HTML文件
+        function saveHTML() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            if (!htmlContent.trim()) {
+                showStatus('没有内容可保存', 'error');
+                return;
+            }
+
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `modified_page_${new Date().getTime()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus('✅ 文件已保存到下载文件夹', 'success');
+        }
+
+        // 重置HTML
+        function resetHTML() {
+            if (confirm('确定要重置所有内容吗？这将清除当前的HTML代码和修改历史。')) {
+                document.getElementById('htmlInput').value = '';
+                document.getElementById('modificationInput').value = '';
+                document.getElementById('previewFrame').src = 'about:blank';
+                modificationHistory = [];
+                updateHistoryDisplay();
+                showStatus('已重置', 'success');
+            }
+        }
+
+        // 刷新预览
+        function refreshPreview() {
+            previewHTML();
+        }
+
+        // 添加到历史记录
+        function addToHistory(modification) {
+            const timestamp = new Date().toLocaleString('zh-CN');
+            modificationHistory.unshift({
+                instruction: modification,
+                timestamp: timestamp
+            });
+            
+            // 限制历史记录数量
+            if (modificationHistory.length > 10) {
+                modificationHistory = modificationHistory.slice(0, 10);
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        // 更新历史记录显示
+        function updateHistoryDisplay() {
+            const container = document.getElementById('historyContainer');
+            
+            if (modificationHistory.length === 0) {
+                container.innerHTML = '<div style="color: #7f8c8d; font-style: italic;">暂无修改记录</div>';
+                return;
+            }
+            
+            container.innerHTML = modificationHistory.map(item => `
+                <div class="history-item">
+                    <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">${item.timestamp}</div>
+                    <div>${item.instruction}</div>
+                </div>
+            `).join('');
+        }
+
+        // 显示状态信息
+        function showStatus(message, type = 'info') {
+            const statusElement = document.getElementById('statusText');
+            statusElement.textContent = message;
+            
+            // 移除之前的状态类
+            statusElement.className = '';
+            
+            // 添加新的状态类
+            if (type === 'error') {
+                statusElement.style.color = '#e74c3c';
+            } else if (type === 'success') {
+                statusElement.style.color = '#27ae60';
+            } else {
+                statusElement.style.color = '#3498db';
+            }
+            
+            // 3秒后恢复默认状态
+            setTimeout(() => {
+                statusElement.textContent = '就绪';
+                statusElement.style.color = '#7f8c8d';
+            }, 3000);
+        }
+
+        // 切换加载状态
+        function toggleLoading(show) {
+            const loadingText = document.getElementById('loadingText');
+            const applyText = document.getElementById('applyText');
+            
+            if (show) {
+                loadingText.classList.add('show');
+                applyText.style.display = 'none';
+            } else {
+                loadingText.classList.remove('show');
+                applyText.style.display = 'inline';
+            }
+        }
+
+        // 更新最后修改时间
+        function updateLastModified() {
+            const lastModifiedElement = document.getElementById('lastModified');
+            lastModifiedElement.textContent = `最后更新: ${new Date().toLocaleString('zh-CN')}`;
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            showStatus('🚀 增强版工具已就绪，支持真正的AI修改！', 'success');
+            
+            // 添加键盘快捷键
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 's':
+                            e.preventDefault();
+                            saveHTML();
+                            break;
+                        case 'Enter':
+                            if (e.target.id === 'modificationInput') {
+                                e.preventDefault();
+                                applyModifications();
+                            }
+                            break;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

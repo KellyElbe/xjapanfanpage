@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML智能修改工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+
+        .left-panel, .right-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            background: #f8f9fa;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .code-input {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            resize: none;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            background: #fafafa;
+            outline: none;
+        }
+
+        .modification-section {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modification-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .modification-input:focus {
+            border-color: #3498db;
+        }
+
+        .modification-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .preview-container {
+            flex: 1;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .history-section {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 15px 20px;
+        }
+
+        .history-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            font-size: 13px;
+        }
+
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-bar {
+            padding: 10px 20px;
+            background: #ecf0f1;
+            border-radius: 0 0 12px 12px;
+            font-size: 12px;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .loading {
+            display: none;
+            color: #3498db;
+        }
+
+        .loading.show {
+            display: inline;
+        }
+
+        .error {
+            color: #e74c3c;
+            background: #fdf2f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .success {
+            color: #27ae60;
+            background: #f0f9f4;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 4px solid #27ae60;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+
+        .example-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: #17a2b8;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .example-text {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛠️ HTML智能修改工具</h1>
+            <p>支持自然语言指令修改HTML页面，实时预览，多轮修改</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 左侧面板 -->
+            <div class="left-panel">
+                <div class="panel-header">
+                    <span class="panel-title">📝 HTML代码编辑</span>
+                    <div>
+                        <button class="btn btn-primary" onclick="previewHTML()">预览</button>
+                        <button class="btn btn-success" onclick="saveHTML()">保存</button>
+                    </div>
+                </div>
+                
+                <textarea 
+                    class="code-input" 
+                    id="htmlInput" 
+                    placeholder="请粘贴您的HTML代码..."
+                ></textarea>
+
+                <div class="modification-section">
+                    <label for="modificationInput" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50;">
+                        🎯 修改指令
+                    </label>
+                    <textarea 
+                        class="modification-input" 
+                        id="modificationInput"
+                        placeholder="请输入您的修改要求，例如：&#10;1、将标题颜色改为红色&#10;2、删除第三个段落&#10;3、将按钮文字改为'立即购买'&#10;4、调换第二和第三个模块的位置"
+                    ></textarea>
+                    
+                    <div class="modification-controls">
+                        <button class="btn btn-primary" onclick="applyModifications()">
+                            <span class="loading" id="loadingText">处理中...</span>
+                            <span id="applyText">应用修改</span>
+                        </button>
+                        <button class="btn btn-warning" onclick="resetHTML()">重置</button>
+                    </div>
+
+                    <div class="example-section">
+                        <div class="example-title">💡 修改指令示例</div>
+                        <div class="example-text">
+                            • 将标题"欢迎"改为"Hello World"<br>
+                            • 删除第二个段落<br>
+                            • 把按钮颜色改为绿色<br>
+                            • 调换第一和第二个div的位置<br>
+                            • 在页面底部添加版权信息<br>
+                            • 将字体大小改为18px
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-section">
+                    <div style="font-weight: 600; margin-bottom: 10px; color: #2c3e50;">📋 修改历史</div>
+                    <div id="historyContainer">
+                        <div style="color: #7f8c8d; font-style: italic;">暂无修改记录</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧面板 -->
+            <div class="right-panel">
+                <div class="panel-header">
+                    <span class="panel-title">👁️ 实时预览</span>
+                    <button class="btn btn-primary" onclick="refreshPreview()">刷新预览</button>
+                </div>
+                
+                <div class="preview-container">
+                    <iframe class="preview-frame" id="previewFrame" src="about:blank"></iframe>
+                </div>
+
+                <div class="status-bar">
+                    <span id="statusText">就绪</span>
+                    <span id="lastModified"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalHTML = '';
+        let currentHTML = '';
+        let modificationHistory = [];
+
+        // 预览HTML
+        function previewHTML() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            if (!htmlContent.trim()) {
+                showStatus('请先输入HTML代码', 'error');
+                return;
+            }
+
+            currentHTML = htmlContent;
+            const previewFrame = document.getElementById('previewFrame');
+            
+            // 创建blob URL来预览HTML
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            previewFrame.src = url;
+            
+            showStatus('预览已更新', 'success');
+            updateLastModified();
+        }
+
+        // 应用修改
+        function applyModifications() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            const modifications = document.getElementById('modificationInput').value;
+
+            if (!htmlContent.trim()) {
+                showStatus('请先输入HTML代码', 'error');
+                return;
+            }
+
+            if (!modifications.trim()) {
+                showStatus('请输入修改指令', 'error');
+                return;
+            }
+
+            // 显示加载状态
+            toggleLoading(true);
+            showStatus('正在处理修改指令...', 'info');
+
+            // 模拟AI处理过程
+            setTimeout(() => {
+                try {
+                    const modifiedHTML = processModifications(htmlContent, modifications);
+                    document.getElementById('htmlInput').value = modifiedHTML;
+                    currentHTML = modifiedHTML;
+                    
+                    // 自动预览修改结果
+                    previewHTML();
+                    
+                    // 添加到历史记录
+                    addToHistory(modifications);
+                    
+                    // 清空修改指令输入框
+                    document.getElementById('modificationInput').value = '';
+                    
+                    showStatus('修改已应用', 'success');
+                } catch (error) {
+                    showStatus('修改处理失败: ' + error.message, 'error');
+                } finally {
+                    toggleLoading(false);
+                }
+            }, 1500);
+        }
+
+        // 处理修改指令的核心函数
+        function processModifications(html, instructions) {
+            let modifiedHTML = html;
+            
+            // 解析修改指令
+            const modifications = parseInstructions(instructions);
+            
+            modifications.forEach(mod => {
+                try {
+                    modifiedHTML = applyModification(modifiedHTML, mod);
+                } catch (error) {
+                    console.warn('应用修改时出错:', error);
+                }
+            });
+            
+            return modifiedHTML;
+        }
+
+        // 解析修改指令
+        function parseInstructions(instructions) {
+            const lines = instructions.split('\n').filter(line => line.trim());
+            const modifications = [];
+            
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (!trimmed) return;
+                
+                // 移除序号前缀
+                const cleaned = trimmed.replace(/^[\d\s、．.）)]+/, '');
+                
+                modifications.push({
+                    type: detectModificationType(cleaned),
+                    instruction: cleaned,
+                    original: trimmed
+                });
+            });
+            
+            return modifications;
+        }
+
+        // 检测修改类型
+        function detectModificationType(instruction) {
+            const lower = instruction.toLowerCase();
+            
+            if (lower.includes('删除') || lower.includes('移除') || lower.includes('去掉')) {
+                return 'delete';
+            } else if (lower.includes('调换') || lower.includes('交换') || lower.includes('位置')) {
+                return 'swap';
+            } else if (lower.includes('改为') || lower.includes('修改') || lower.includes('更改')) {
+                return 'modify';
+            } else if (lower.includes('添加') || lower.includes('增加') || lower.includes('插入')) {
+                return 'add';
+            } else if (lower.includes('颜色') || lower.includes('样式') || lower.includes('字体')) {
+                return 'style';
+            }
+            
+            return 'modify';
+        }
+
+        // 应用单个修改
+        function applyModification(html, modification) {
+            const { type, instruction } = modification;
+            
+            switch (type) {
+                case 'delete':
+                    return applyDeleteModification(html, instruction);
+                case 'modify':
+                    return applyTextModification(html, instruction);
+                case 'style':
+                    return applyStyleModification(html, instruction);
+                case 'swap':
+                    return applySwapModification(html, instruction);
+                case 'add':
+                    return applyAddModification(html, instruction);
+                default:
+                    return applyTextModification(html, instruction);
+            }
+        }
+
+        // 应用文本修改
+        function applyTextModification(html, instruction) {
+            // 匹配 "将X改为Y" 或 "把X改成Y" 的模式
+            const patterns = [
+                /将[""""]([^""""]*)["""""]\s*改为\s*[""""]([^""""]*)["""""]/g,
+                /把[""""]([^""""]*)["""""]\s*改成\s*[""""]([^""""]*)["""""]/g,
+                /将\s*([^\s改为]+)\s*改为\s*([^\s]+)/g,
+                /把\s*([^\s改成]+)\s*改成\s*([^\s]+)/g
+            ];
+            
+            let modifiedHTML = html;
+            
+            patterns.forEach(pattern => {
+                const matches = [...instruction.matchAll(pattern)];
+                matches.forEach(match => {
+                    const [, oldText, newText] = match;
+                    if (oldText && newText) {
+                        // 使用全局替换，但要小心HTML标签
+                        const regex = new RegExp(escapeRegExp(oldText.trim()), 'g');
+                        modifiedHTML = modifiedHTML.replace(regex, newText.trim());
+                    }
+                });
+            });
+            
+            return modifiedHTML;
+        }
+
+        // 应用删除修改
+        function applyDeleteModification(html, instruction) {
+            // 提取要删除的内容
+            const deletePatterns = [
+                /删除[""""]([^""""]*)["""""]/g,
+                /删去[""""]([^""""]*)["""""]/g,
+                /移除[""""]([^""""]*)["""""]/g,
+                /删除\s*([^\s，,。.]+)/g
+            ];
+            
+            let modifiedHTML = html;
+            
+            deletePatterns.forEach(pattern => {
+                const matches = [...instruction.matchAll(pattern)];
+                matches.forEach(match => {
+                    const [, textToDelete] = match;
+                    if (textToDelete) {
+                        // 查找并删除包含该文本的元素或文本
+                        modifiedHTML = deleteElementContaining(modifiedHTML, textToDelete.trim());
+                    }
+                });
+            });
+            
+            return modifiedHTML;
+        }
+
+        // 删除包含特定文本的元素
+        function deleteElementContaining(html, text) {
+            // 创建临时DOM来操作
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // 查找包含文本的元素
+            const walker = document.createTreeWalker(
+                doc.body || doc.documentElement,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            const nodesToRemove = [];
+            let node;
+            
+            while (node = walker.nextNode()) {
+                if (node.textContent.includes(text)) {
+                    // 找到包含文本的最近的块级元素
+                    let parent = node.parentElement;
+                    while (parent && !isBlockElement(parent)) {
+                        parent = parent.parentElement;
+                    }
+                    if (parent && !nodesToRemove.includes(parent)) {
+                        nodesToRemove.push(parent);
+                    }
+                }
+            }
+            
+            // 删除找到的元素
+            nodesToRemove.forEach(element => {
+                if (element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+            });
+            
+            return doc.documentElement.outerHTML;
+        }
+
+        // 判断是否为块级元素
+        function isBlockElement(element) {
+            const blockElements = ['div', 'p', 'section', 'article', 'header', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ul', 'ol'];
+            return blockElements.includes(element.tagName.toLowerCase());
+        }
+
+        // 应用样式修改
+        function applyStyleModification(html, instruction) {
+            // 这里可以添加更复杂的样式修改逻辑
+            return html;
+        }
+
+        // 应用位置交换修改
+        function applySwapModification(html, instruction) {
+            // 这里可以添加元素位置交换的逻辑
+            return html;
+        }
+
+        // 应用添加修改
+        function applyAddModification(html, instruction) {
+            // 这里可以添加元素添加的逻辑
+            return html;
+        }
+
+        // 转义正则表达式特殊字符
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // 保存HTML文件
+        function saveHTML() {
+            const htmlContent = document.getElementById('htmlInput').value;
+            if (!htmlContent.trim()) {
+                showStatus('没有内容可保存', 'error');
+                return;
+            }
+
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `modified_page_${new Date().getTime()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus('文件已保存到下载文件夹', 'success');
+        }
+
+        // 重置HTML
+        function resetHTML() {
+            if (confirm('确定要重置所有内容吗？这将清除当前的HTML代码和修改历史。')) {
+                document.getElementById('htmlInput').value = '';
+                document.getElementById('modificationInput').value = '';
+                document.getElementById('previewFrame').src = 'about:blank';
+                modificationHistory = [];
+                updateHistoryDisplay();
+                showStatus('已重置', 'success');
+            }
+        }
+
+        // 刷新预览
+        function refreshPreview() {
+            previewHTML();
+        }
+
+        // 添加到历史记录
+        function addToHistory(modification) {
+            const timestamp = new Date().toLocaleString('zh-CN');
+            modificationHistory.unshift({
+                instruction: modification,
+                timestamp: timestamp
+            });
+            
+            // 限制历史记录数量
+            if (modificationHistory.length > 10) {
+                modificationHistory = modificationHistory.slice(0, 10);
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        // 更新历史记录显示
+        function updateHistoryDisplay() {
+            const container = document.getElementById('historyContainer');
+            
+            if (modificationHistory.length === 0) {
+                container.innerHTML = '<div style="color: #7f8c8d; font-style: italic;">暂无修改记录</div>';
+                return;
+            }
+            
+            container.innerHTML = modificationHistory.map(item => `
+                <div class="history-item">
+                    <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">${item.timestamp}</div>
+                    <div>${item.instruction}</div>
+                </div>
+            `).join('');
+        }
+
+        // 显示状态信息
+        function showStatus(message, type = 'info') {
+            const statusElement = document.getElementById('statusText');
+            statusElement.textContent = message;
+            
+            // 移除之前的状态类
+            statusElement.className = '';
+            
+            // 添加新的状态类
+            if (type === 'error') {
+                statusElement.style.color = '#e74c3c';
+            } else if (type === 'success') {
+                statusElement.style.color = '#27ae60';
+            } else {
+                statusElement.style.color = '#3498db';
+            }
+            
+            // 3秒后恢复默认状态
+            setTimeout(() => {
+                statusElement.textContent = '就绪';
+                statusElement.style.color = '#7f8c8d';
+            }, 3000);
+        }
+
+        // 切换加载状态
+        function toggleLoading(show) {
+            const loadingText = document.getElementById('loadingText');
+            const applyText = document.getElementById('applyText');
+            
+            if (show) {
+                loadingText.classList.add('show');
+                applyText.style.display = 'none';
+            } else {
+                loadingText.classList.remove('show');
+                applyText.style.display = 'inline';
+            }
+        }
+
+        // 更新最后修改时间
+        function updateLastModified() {
+            const lastModifiedElement = document.getElementById('lastModified');
+            lastModifiedElement.textContent = `最后更新: ${new Date().toLocaleString('zh-CN')}`;
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            showStatus('工具已就绪，请粘贴HTML代码开始使用', 'success');
+            
+            // 添加键盘快捷键
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 's':
+                            e.preventDefault();
+                            saveHTML();
+                            break;
+                        case 'Enter':
+                            if (e.target.id === 'modificationInput') {
+                                e.preventDefault();
+                                applyModifications();
+                            }
+                            break;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
