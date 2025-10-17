@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>占位图片生成器</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0A0A0A; color: white; }
+        .placeholder { margin: 20px 0; padding: 20px; background: #1A1A1A; border: 1px solid #333; }
+        canvas { border: 1px solid #8B0000; }
+    </style>
+</head>
+<body>
+    <h1>X Japan 网站占位图片生成器</h1>
+    
+    <div class="placeholder">
+        <h3>X Japan Logo</h3>
+        <canvas id="logo" width="200" height="80"></canvas>
+    </div>
+    
+    <div class="placeholder">
+        <h3>英雄区域背景</h3>
+        <canvas id="hero" width="800" height="400"></canvas>
+    </div>
+    
+    <div class="placeholder">
+        <h3>演出海报</h3>
+        <canvas id="concert" width="300" height="200"></canvas>
+    </div>
+    
+    <div class="placeholder">
+        <h3>新闻图片</h3>
+        <canvas id="news" width="300" height="200"></canvas>
+    </div>
+    
+    <div class="placeholder">
+        <h3>媒体报道</h3>
+        <canvas id="media" width="300" height="200"></canvas>
+    </div>
+    
+    <div class="placeholder">
+        <h3>社交媒体</h3>
+        <canvas id="social" width="300" height="200"></canvas>
+    </div>
+
+    <script>
+        // 创建 X Japan Logo
+        const logoCanvas = document.getElementById('logo');
+        const logoCtx = logoCanvas.getContext('2d');
+        
+        // 背景
+        logoCtx.fillStyle = '#0A0A0A';
+        logoCtx.fillRect(0, 0, 200, 80);
+        
+        // X Japan 文字
+        logoCtx.fillStyle = '#C0C0C0';
+        logoCtx.font = 'bold 24px Arial';
+        logoCtx.textAlign = 'center';
+        logoCtx.fillText('X JAPAN', 100, 45);
+        
+        // 红色装饰线
+        logoCtx.strokeStyle = '#8B0000';
+        logoCtx.lineWidth = 2;
+        logoCtx.beginPath();
+        logoCtx.moveTo(20, 60);
+        logoCtx.lineTo(180, 60);
+        logoCtx.stroke();
+
+        // 创建英雄区域背景
+        const heroCanvas = document.getElementById('hero');
+        const heroCtx = heroCanvas.getContext('2d');
+        
+        // 渐变背景
+        const gradient = heroCtx.createLinearGradient(0, 0, 800, 400);
+        gradient.addColorStop(0, '#0A0A0A');
+        gradient.addColorStop(0.5, '#8B0000');
+        gradient.addColorStop(1, '#0A0A0A');
+        heroCtx.fillStyle = gradient;
+        heroCtx.fillRect(0, 0, 800, 400);
+        
+        // 乐队剪影
+        heroCtx.fillStyle = '#1A1A1A';
+        heroCtx.fillRect(100, 250, 60, 120);
+        heroCtx.fillRect(200, 230, 60, 140);
+        heroCtx.fillRect(300, 240, 60, 130);
+        heroCtx.fillRect(400, 220, 60, 150);
+        heroCtx.fillRect(500, 250, 60, 120);
+        
+        // 文字
+        heroCtx.fillStyle = '#C0C0C0';
+        heroCtx.font = 'bold 36px Arial';
+        heroCtx.textAlign = 'center';
+        heroCtx.fillText('X JAPAN', 400, 100);
+        heroCtx.font = '18px Arial';
+        heroCtx.fillText('永远的传说', 400, 130);
+
+        // 创建演出海报
+        const concertCanvas = document.getElementById('concert');
+        const concertCtx = concertCanvas.getContext('2d');
+        
+        concertCtx.fillStyle = '#1A1A1A';
+        concertCtx.fillRect(0, 0, 300, 200);
+        
+        concertCtx.fillStyle = '#8B0000';
+        concertCtx.font = 'bold 24px Arial';
+        concertCtx.textAlign = 'center';
+        concertCtx.fillText('WORLD TOUR', 150, 80);
+        concertCtx.fillStyle = '#C0C0C0';
+        concertCtx.font = '16px Arial';
+        concertCtx.fillText('2024', 150, 110);
+        concertCtx.fillText('东京巨蛋', 150, 140);
+
+        // 创建新闻图片
+        const newsCanvas = document.getElementById('news');
+        const newsCtx = newsCanvas.getContext('2d');
+        
+        newsCtx.fillStyle = '#0A0A0A';
+        newsCtx.fillRect(0, 0, 300, 200);
+        
+        newsCtx.fillStyle = '#C0C0C0';
+        newsCtx.font = 'bold 20px Arial';
+        newsCtx.textAlign = 'center';
+        newsCtx.fillText('最新新闻', 150, 80);
+        newsCtx.font = '14px Arial';
+        newsCtx.fillText('新专辑制作进展', 150, 110);
+        newsCtx.fillText('YOSHIKI 最新访谈', 150, 130);
+
+        // 创建媒体报道图片
+        const mediaCanvas = document.getElementById('media');
+        const mediaCtx = mediaCanvas.getContext('2d');
+        
+        mediaCtx.fillStyle = '#1A1A1A';
+        mediaCtx.fillRect(0, 0, 300, 200);
+        
+        mediaCtx.fillStyle = '#8B0000';
+        mediaCtx.font = 'bold 18px Arial';
+        mediaCtx.textAlign = 'center';
+        mediaCtx.fillText('NHK 特别纪录片', 150, 80);
+        mediaCtx.fillStyle = '#C0C0C0';
+        mediaCtx.font = '14px Arial';
+        mediaCtx.fillText('摇滚传奇的诞生', 150, 110);
+
+        // 创建社交媒体图片
+        const socialCanvas = document.getElementById('social');
+        const socialCtx = socialCanvas.getContext('2d');
+        
+        socialCtx.fillStyle = '#0A0A0A';
+        socialCtx.fillRect(0, 0, 300, 200);
+        
+        socialCtx.fillStyle = '#C0C0C0';
+        socialCtx.font = 'bold 16px Arial';
+        socialCtx.textAlign = 'center';
+        socialCtx.fillText('YOSHIKI', 150, 70);
+        socialCtx.fillText('Instagram 更新', 150, 90);
+        socialCtx.font = '12px Arial';
+        socialCtx.fillText('录音室最新照片', 150, 120);
+        socialCtx.fillText('制作花絮分享', 150, 140);
+
+        // 下载功能
+        function downloadCanvas(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // 添加下载按钮
+        document.querySelectorAll('canvas').forEach(canvas => {
+            const button = document.createElement('button');
+            button.textContent = '下载';
+            button.style.cssText = 'margin-left: 10px; padding: 5px 10px; background: #8B0000; color: white; border: none; cursor: pointer;';
+            button.onclick = () => downloadCanvas(canvas.id, `x-japan-${canvas.id}.png`);
+            canvas.parentNode.appendChild(button);
+        });
+    </script>
+</body>
+</html>

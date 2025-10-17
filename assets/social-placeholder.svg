@@ -1,0 +1,9 @@
+<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="200" fill="#0A0A0A"/>
+  <text x="150" y="60" text-anchor="middle" fill="#C0C0C0" font-family="Arial, sans-serif" font-size="16" font-weight="bold">YOSHIKI</text>
+  <text x="150" y="80" text-anchor="middle" fill="#8B0000" font-family="Arial, sans-serif" font-size="14">Instagram 更新</text>
+  <text x="150" y="110" text-anchor="middle" fill="#C0C0C0" font-family="Arial, sans-serif" font-size="12">录音室最新照片</text>
+  <text x="150" y="130" text-anchor="middle" fill="#C0C0C0" font-family="Arial, sans-serif" font-size="12">制作花絮分享</text>
+  <rect x="120" y="150" width="60" height="30" rx="15" fill="none" stroke="#8B0000" stroke-width="1"/>
+  <text x="150" y="168" text-anchor="middle" fill="#8B0000" font-family="Arial, sans-serif" font-size="10">查看更多</text>
+</svg>
